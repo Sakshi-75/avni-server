@@ -13,6 +13,7 @@ classes/*
 minor_version
 major_version
 **/rules/*.js
+.kiro
 
 # VSCode files
 .vscode
