@@ -131,6 +131,7 @@ dependencyManagement {
 test {
     filter {
         includeTestsMatching "*Test"
+        excludeTestsMatching "*IntegrationTest"
     }
 }
 

@@ -46,7 +46,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Run unit tests
-        run: ./gradlew test --tests '*Test' --exclude-tests '*IntegrationTest' --exclude-tests '*ET'
+        run: ./gradlew test
 
       - name: Generate test report
         if: always()
