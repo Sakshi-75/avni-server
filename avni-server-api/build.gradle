@@ -130,13 +130,21 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
-    exclude '**/web/**/*Test.class'
-    exclude '**/dao/**/*Test.class'
-    exclude '**/messaging/**/*Test.class'
-    exclude '**/importer/**/*Test.class'
-    exclude '**/identifier/**/*Test.class'
-    exclude '**/backgroundJob/**/*Test.class'
     exclude '**/*IntegrationTest.class'
+    exclude '**/*ET.class'
+    exclude '**/BaseCSVImportTest.class'
+    exclude '**/CacheStrategyTest.class'
+    exclude '**/TransactionDataSyncTest.class'
+    exclude '**/UserSubjectSyncTest.class'
+    exclude '**/QueryRepositoryTest.class'
+    exclude '**/PrivilegeRepositoryTest.class'
+    exclude '**/UserRepositoryTest.class'
+    exclude '**/FormElementRepositoryTest.class'
+    exclude '**/FormMappingRepositoryTest.class'
+    exclude '**/IdentifierUserAssignmentRepositoryTest.class'
+    exclude '**/MessageRequestQueueRepositoryTest.class'
+    exclude '**/GlificRestClientTest.class'
+    exclude '**/MessageTemplateControllerTest.class'
 }
 
 jacocoTestReport {
