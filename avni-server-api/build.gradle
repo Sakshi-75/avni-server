@@ -15,6 +15,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.6'
     id "com.netflix.nebula.ospackage" version "11.10.0"
     id 'java'
+    id 'jacoco'
 }
 
 //todo: Remove when upgrading Spring version. This was introduced to use SameSiteCookies
@@ -129,6 +130,25 @@ dependencyManagement {
 test {
     filter {
         includeTestsMatching "*Test"
+    }
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                '**/domain/**',
+                '**/web/request/**',
+                '**/web/response/**',
+                '**/web/contract/**',
+                '**/contract/**',
+                '**/*Request.class',
+                '**/*Response.class',
+                '**/*Contract.class',
+                '**/*Entity.class',
+                '**/*Wrapper.class'
+            ])
+        }))
     }
 }
 
