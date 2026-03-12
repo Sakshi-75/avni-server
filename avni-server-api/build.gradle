@@ -130,6 +130,7 @@ dependencyManagement {
 
 test {
     exclude '**/*IntegrationTest.class'
+    exclude '**/*Integration2Test.class'
     exclude '**/*ET.class'
     exclude '**/BaseCSVImportTest.class'
     exclude '**/CacheStrategyTest.class'
