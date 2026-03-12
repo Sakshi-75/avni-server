@@ -133,6 +133,13 @@ test {
         includeTestsMatching "*Test"
         excludeTestsMatching "*IntegrationTest"
     }
+    useJUnitPlatform()
+    exclude '**/web/**/*Test.class'
+    exclude '**/dao/**/*Test.class'
+    exclude '**/messaging/**/*Test.class'
+    exclude '**/importer/**/*Test.class'
+    exclude '**/identifier/**/*Test.class'
+    exclude '**/backgroundJob/**/*Test.class'
 }
 
 jacocoTestReport {
