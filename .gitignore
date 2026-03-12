@@ -45,3 +45,6 @@ dev-commands.txt
 /avni-rule-server/src/main/js/exports/package.json
 /avni-rule-server/src/main/js/exports/ruleInvoker.js
 /avni-rule-server/src/main/js/exports/ruleInvoker.js.LICENSE.txt
+*.log
+*.sql
+TEST_DATA_README.md
