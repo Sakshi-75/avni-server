@@ -129,10 +129,6 @@ dependencyManagement {
 }
 
 test {
-    filter {
-        includeTestsMatching "*Test"
-        excludeTestsMatching "*IntegrationTest"
-    }
     useJUnitPlatform()
     exclude '**/web/**/*Test.class'
     exclude '**/dao/**/*Test.class'
@@ -140,6 +136,7 @@ test {
     exclude '**/importer/**/*Test.class'
     exclude '**/identifier/**/*Test.class'
     exclude '**/backgroundJob/**/*Test.class'
+    exclude '**/*IntegrationTest.class'
 }
 
 jacocoTestReport {
