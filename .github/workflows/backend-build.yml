@@ -76,6 +76,7 @@ jobs:
           OPENCHS_DATABASE_PASSWORD: password
           SPRING_FLYWAY_BASELINE_ON_MIGRATE: true
           SPRING_FLYWAY_CLEAN_DISABLED: false
+          SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO: none
 
       - name: Generate test report
         if: always()
