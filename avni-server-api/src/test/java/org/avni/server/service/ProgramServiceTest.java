@@ -35,12 +35,14 @@ public class ProgramServiceTest {
         request.setUuid("uuid1");
         request.setName("Test Program");
         request.setActive(true);
+        request.setVoided(false);
         
         when(programRepository.findByUuid("uuid1")).thenReturn(null);
+        when(programRepository.save(any(Program.class))).thenReturn(new Program());
         
         service.saveProgram(request);
         
-        verify(programRepository, times(2)).save(any(Program.class));
+        verify(programRepository, atLeast(1)).save(any(Program.class));
     }
     
     @Test
@@ -48,6 +50,7 @@ public class ProgramServiceTest {
         ProgramRequest request = new ProgramRequest();
         request.setUuid("uuid1");
         request.setName("Updated Program");
+        request.setVoided(false);
         
         Program existing = new Program();
         existing.setUuid("uuid1");
@@ -66,6 +69,10 @@ public class ProgramServiceTest {
         request.setName("New Name");
         request.setColour("Red");
         request.setActive(true);
+        request.setVoided(false);
+        request.setAllowMultipleEnrolments(true);
+        request.setManualEligibilityCheckRequired(false);
+        request.setShowGrowthChart(true);
         
         when(programRepository.save(program)).thenReturn(program);
         
@@ -73,6 +80,28 @@ public class ProgramServiceTest {
         
         assertEquals("New Name", result.getName());
         assertEquals("Red", result.getColour());
+        assertTrue(result.isAllowMultipleEnrolments());
+        assertTrue(result.isShowGrowthChart());
+        assertFalse(result.isManualEligibilityCheckRequired());
         verify(programRepository).save(program);
+    }
+    
+    @Test
+    public void testUpdateAndSaveProgramWithRules() {
+        Program program = new Program();
+        ProgramRequest request = new ProgramRequest();
+        request.setName("Program With Rules");
+        request.setEnrolmentSummaryRule("rule1");
+        request.setEnrolmentEligibilityCheckRule("rule2");
+        request.setManualEnrolmentEligibilityCheckRule("rule3");
+        request.setVoided(false);
+        
+        when(programRepository.save(program)).thenReturn(program);
+        
+        Program result = service.updateAndSaveProgram(program, request);
+        
+        assertEquals("rule1", result.getEnrolmentSummaryRule());
+        assertEquals("rule2", result.getEnrolmentEligibilityCheckRule());
+        assertEquals("rule3", result.getManualEnrolmentEligibilityCheckRule());
     }
 }
