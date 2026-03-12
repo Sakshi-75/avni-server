@@ -12,6 +12,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: openchs_test
+          POSTGRES_USER: openchs
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,6 +45,11 @@ jobs:
 
       - name: Run tests
         run: ./gradlew test
+        env:
+          OPENCHS_DATABASE_HOST: localhost
+          OPENCHS_DATABASE_PORT: 5432
+          OPENCHS_DATABASE_USER: openchs
+          OPENCHS_DATABASE_PASSWORD: password
 
       - name: Generate test report
         if: always()
