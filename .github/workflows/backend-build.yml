@@ -63,6 +63,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Setup PostgreSQL extensions
+        run: |
+          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -c "CREATE EXTENSION IF NOT EXISTS ltree;"
+          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -c "CREATE EXTENSION IF NOT EXISTS hstore;"
+
       - name: Load database schema
         run: |
           PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -f avni-server-api/src/test/resources/schema_dump.sql
