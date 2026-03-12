@@ -21,7 +21,7 @@ public class FormElementServiceTest {
     }
     
     @Test
-    public void testIsNonScopeEntityChanged() {
+    public void testIsNonScopeEntityChangedTrue() {
         DateTime dateTime = DateTime.now();
         when(formElementRepository.existsByLastModifiedDateTimeGreaterThan(dateTime)).thenReturn(true);
         
@@ -29,5 +29,25 @@ public class FormElementServiceTest {
         
         assertTrue(result);
         verify(formElementRepository).existsByLastModifiedDateTimeGreaterThan(dateTime);
+    }
+    
+    @Test
+    public void testIsNonScopeEntityChangedFalse() {
+        DateTime dateTime = DateTime.now();
+        when(formElementRepository.existsByLastModifiedDateTimeGreaterThan(dateTime)).thenReturn(false);
+        
+        boolean result = service.isNonScopeEntityChanged(dateTime);
+        
+        assertFalse(result);
+    }
+    
+    @Test
+    public void testIsNonScopeEntityChangedWithFutureDate() {
+        DateTime futureDate = DateTime.now().plusDays(1);
+        when(formElementRepository.existsByLastModifiedDateTimeGreaterThan(futureDate)).thenReturn(false);
+        
+        boolean result = service.isNonScopeEntityChanged(futureDate);
+        
+        assertFalse(result);
     }
 }

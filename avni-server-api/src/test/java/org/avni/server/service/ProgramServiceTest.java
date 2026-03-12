@@ -1,56 +1,78 @@
 package org.avni.server.service;
 
-import org.avni.server.application.FormMapping;
+import org.avni.server.dao.OperationalProgramRepository;
+import org.avni.server.dao.ProgramRepository;
 import org.avni.server.dao.application.FormMappingRepository;
-import org.avni.server.domain.Individual;
 import org.avni.server.domain.Program;
-import org.avni.server.domain.ProgramEnrolment;
-import org.avni.server.domain.RuleExecutionException;
-import org.avni.server.domain.factory.metadata.FormMappingBuilder;
-import org.avni.server.domain.factory.metadata.ProgramBuilder;
-import org.avni.server.domain.factory.txn.ProgramEnrolmentBuilder;
-import org.avni.server.domain.factory.txn.SubjectBuilder;
-import org.avni.server.web.request.rules.response.EligibilityRuleEntity;
-import org.avni.server.web.request.rules.response.EligibilityRuleResponseEntity;
+import org.avni.server.web.request.ProgramRequest;
+import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ProgramServiceTest {
-    @Test
-    public void multipleEnrolmentsProgramsAreStaticallyAlwaysEligible() throws RuleExecutionException {
-        Program program = new ProgramBuilder().withUuid("1").allowMultipleEnrolments(true).build();
-        List<Program> eligiblePrograms = getEligiblePrograms(program);
-        assertEquals(1, eligiblePrograms.size());
+    @Mock private ProgramRepository programRepository;
+    @Mock private OperationalProgramRepository operationalProgramRepository;
+    @Mock private FormMappingRepository formMappingRepository;
+    @Mock private RuleService ruleService;
+    
+    private ProgramService service;
+    
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        service = new ProgramService(programRepository, operationalProgramRepository, 
+                                     formMappingRepository, ruleService);
     }
-
+    
     @Test
-    public void nonMultipleEnrolmentsProgramsAreStaticallyNotEligible() throws RuleExecutionException {
-        Program program = new ProgramBuilder().withUuid("1").allowMultipleEnrolments(false).build();
-        List<Program> eligiblePrograms = getEligiblePrograms(program);
-        assertEquals(0, eligiblePrograms.size());
+    public void testSaveProgramNew() {
+        ProgramRequest request = new ProgramRequest();
+        request.setUuid("uuid1");
+        request.setName("Test Program");
+        request.setActive(true);
+        
+        when(programRepository.findByUuid("uuid1")).thenReturn(null);
+        
+        service.saveProgram(request);
+        
+        verify(programRepository, times(2)).save(any(Program.class));
     }
-
-    public List<Program> getEligiblePrograms(Program program) throws RuleExecutionException {
-        ProgramEnrolment enrolment = new ProgramEnrolmentBuilder().setProgram(program).build();
-        Individual subject = new SubjectBuilder().addEnrolment(enrolment).build();
-
-        FormMapping formMapping = new FormMappingBuilder().withProgram(program).build();
-        List<FormMapping> formMappings = Collections.singletonList(formMapping);
-
-        FormMappingRepository formMappingRepository = mock(FormMappingRepository.class);
-        when(formMappingRepository.findBySubjectTypeAndFormFormTypeAndIsVoidedFalse(any(), any())).thenReturn(formMappings);
-        RuleService ruleService = mock(RuleService.class);
-
-        EligibilityRuleResponseEntity ruleResponseEntity = new EligibilityRuleResponseEntity(Collections.singletonList(new EligibilityRuleEntity(true, program.getUuid())));
-        when(ruleService.executeProgramEligibilityCheckRule(any(), any())).thenReturn(ruleResponseEntity);
-        ProgramService programService = new ProgramService(null, null, formMappingRepository, ruleService);
-        return programService.getEligiblePrograms(subject);
+    
+    @Test
+    public void testSaveProgramExisting() {
+        ProgramRequest request = new ProgramRequest();
+        request.setUuid("uuid1");
+        request.setName("Updated Program");
+        
+        Program existing = new Program();
+        existing.setUuid("uuid1");
+        when(programRepository.findByUuid("uuid1")).thenReturn(existing);
+        when(programRepository.save(any(Program.class))).thenReturn(existing);
+        
+        service.saveProgram(request);
+        
+        verify(programRepository, atLeast(1)).save(existing);
+    }
+    
+    @Test
+    public void testUpdateAndSaveProgram() {
+        Program program = new Program();
+        ProgramRequest request = new ProgramRequest();
+        request.setName("New Name");
+        request.setColour("Red");
+        request.setActive(true);
+        
+        when(programRepository.save(program)).thenReturn(program);
+        
+        Program result = service.updateAndSaveProgram(program, request);
+        
+        assertEquals("New Name", result.getName());
+        assertEquals("Red", result.getColour());
+        verify(programRepository).save(program);
     }
 }

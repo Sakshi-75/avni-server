@@ -6,22 +6,16 @@ import static org.junit.Assert.*;
 
 public class BuilderExceptionTest {
     @Test
-    public void hasBundleSpecificMessage() {
-        try {
-            throw new BuilderException("userMessage", "bundleSpecificMessage");
-        } catch (BuilderException be) {
-            assertEquals("userMessage (bundleSpecificMessage)", be.getMessage());
-            assertEquals("userMessage", be.getUserMessage());
-        }
+    public void testBuilderExceptionWithMessage() {
+        BuilderException exception = new BuilderException("Error message");
+        assertEquals("Error message", exception.getMessage());
+        assertEquals("Error message", exception.getUserMessage());
     }
-
+    
     @Test
-    public void doesntHaveBundleSpecificMessage() {
-        try {
-            throw new BuilderException("userMessage");
-        } catch (BuilderException be) {
-            assertEquals("userMessage", be.getMessage());
-            assertEquals("userMessage", be.getUserMessage());
-        }
+    public void testBuilderExceptionWithBundleMessage() {
+        BuilderException exception = new BuilderException("Error", "Bundle info");
+        assertEquals("Error (Bundle info)", exception.getMessage());
+        assertEquals("Error", exception.getUserMessage());
     }
 }

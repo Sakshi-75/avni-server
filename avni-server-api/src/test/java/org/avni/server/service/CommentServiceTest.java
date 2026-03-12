@@ -34,11 +34,31 @@ public class CommentServiceTest {
     @Test
     public void testDeleteComment() {
         Comment comment = new Comment();
+        comment.setVoided(false);
         when(commentRepository.saveEntity(comment)).thenReturn(comment);
         
         Comment result = service.deleteComment(comment);
         
         assertTrue(result.isVoided());
         verify(commentRepository).saveEntity(comment);
+    }
+    
+    @Test
+    public void testDeleteCommentAlreadyVoided() {
+        Comment comment = new Comment();
+        comment.setVoided(true);
+        when(commentRepository.saveEntity(comment)).thenReturn(comment);
+        
+        Comment result = service.deleteComment(comment);
+        
+        assertTrue(result.isVoided());
+        verify(commentRepository).saveEntity(comment);
+    }
+    
+    @Test
+    public void testRepository() {
+        OperatingIndividualScopeAwareRepository<Comment> repo = service.repository();
+        assertNotNull(repo);
+        assertEquals(commentRepository, repo);
     }
 }

@@ -21,7 +21,18 @@ public class ConceptAnswerServiceTest {
     }
     
     @Test
-    public void testIsNonScopeEntityChanged() {
+    public void testIsNonScopeEntityChangedTrue() {
+        DateTime dateTime = DateTime.now();
+        when(conceptAnswerRepository.existsByLastModifiedDateTimeGreaterThan(dateTime)).thenReturn(true);
+        
+        boolean result = service.isNonScopeEntityChanged(dateTime);
+        
+        assertTrue(result);
+        verify(conceptAnswerRepository).existsByLastModifiedDateTimeGreaterThan(dateTime);
+    }
+    
+    @Test
+    public void testIsNonScopeEntityChangedFalse() {
         DateTime dateTime = DateTime.now();
         when(conceptAnswerRepository.existsByLastModifiedDateTimeGreaterThan(dateTime)).thenReturn(false);
         
@@ -29,5 +40,15 @@ public class ConceptAnswerServiceTest {
         
         assertFalse(result);
         verify(conceptAnswerRepository).existsByLastModifiedDateTimeGreaterThan(dateTime);
+    }
+    
+    @Test
+    public void testIsNonScopeEntityChangedWithOldDate() {
+        DateTime oldDate = DateTime.now().minusDays(30);
+        when(conceptAnswerRepository.existsByLastModifiedDateTimeGreaterThan(oldDate)).thenReturn(true);
+        
+        boolean result = service.isNonScopeEntityChanged(oldDate);
+        
+        assertTrue(result);
     }
 }
