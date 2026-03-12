@@ -129,7 +129,6 @@ dependencyManagement {
 }
 
 test {
-    useJUnitPlatform()
     exclude '**/*IntegrationTest.class'
     exclude '**/*ET.class'
     exclude '**/BaseCSVImportTest.class'
