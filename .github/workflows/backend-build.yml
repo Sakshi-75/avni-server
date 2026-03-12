@@ -63,6 +63,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Load database schema
+        run: |
+          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -f avni-server-api/src/test/resources/schema_dump.sql
+
       - name: Run unit tests
         run: ./gradlew test
 
@@ -74,9 +78,7 @@ jobs:
           OPENCHS_DATABASE_PORT: 5432
           OPENCHS_DATABASE_USER: openchs
           OPENCHS_DATABASE_PASSWORD: password
-          SPRING_FLYWAY_BASELINE_ON_MIGRATE: true
-          SPRING_FLYWAY_CLEAN_DISABLED: false
-          SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO: none
+          SPRING_FLYWAY_ENABLED: false
 
       - name: Generate test report
         if: always()
