@@ -19,3 +19,15 @@ insert into user_group (uuid, user_id, group_id, version, organisation_id, creat
 VALUES ('3d5b6beb-ba83-4c73-9a66-ea8ffdc0396d', (select id from users where username = 'admin@example'), (select id from groups where name = 'Administrators'), 1,
         (select id from organisation where name = 'example'), (select id from users where username = 'admin@example'),
         (select id from users where username = 'admin@example'), current_timestamp, current_timestamp);
+
+-- Create translation record for the organisation
+insert into translation (uuid, translation_json, language, organisation_id, created_by_id, last_modified_by_id, created_date_time, last_modified_date_time)
+values (uuid_generate_v4(), '{}'::jsonb, 'en', (select id from organisation where name = 'example'),
+        (select id from users where username = 'admin@example'), (select id from users where username = 'admin@example'),
+        current_timestamp, current_timestamp);
+
+-- Fix subject_type.type null values (set default type for Individual)
+UPDATE subject_type SET type = 'Person' WHERE type IS NULL AND name = 'Individual';
+
+-- Fix address_level.lineage null values (required for location operations)
+UPDATE address_level SET lineage = id::text::ltree WHERE lineage IS NULL;
