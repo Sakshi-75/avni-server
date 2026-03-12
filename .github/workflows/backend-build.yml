@@ -71,10 +71,12 @@ jobs:
 
       - name: Load database schema
         run: |
-          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -f avni-server-api/src/test/resources/schema_dump.sql
-          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -c "SET session_replication_role = replica;"
-          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -f avni-server-api/src/test/resources/bootstrap_data.sql
-          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -c "SET session_replication_role = DEFAULT;"
+          PGPASSWORD=password psql -h localhost -U openchs -d openchs_test <<EOF
+          \i avni-server-api/src/test/resources/schema_dump.sql
+          SET session_replication_role = replica;
+          \i avni-server-api/src/test/resources/bootstrap_data.sql
+          SET session_replication_role = DEFAULT;
+          EOF
 
       - name: Run unit tests
         run: ./gradlew test
