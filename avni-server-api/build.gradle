@@ -148,6 +148,7 @@ test {
 }
 
 jacocoTestReport {
+    executionData test, integrationTest
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
@@ -165,6 +166,8 @@ jacocoTestReport {
         }))
     }
 }
+
+integrationTest.finalizedBy jacocoTestReport
 
 task externalTest(type: Test) {
     filter {

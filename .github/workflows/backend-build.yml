@@ -70,16 +70,7 @@ jobs:
           PGPASSWORD=password psql -h localhost -U openchs -d openchs_test -c "CREATE EXTENSION IF NOT EXISTS hstore;"
 
       - name: Run unit tests with coverage
-        run: ./gradlew test jacocoTestReport
-
-      - name: Check coverage threshold
-        run: |
-          COVERAGE=$(grep -oP 'Total.*?(\d+)%' avni-server-api/build/reports/jacoco/test/html/index.html | grep -oP '\d+' | tail -1)
-          echo "Code coverage: ${COVERAGE}%"
-          if [ "$COVERAGE" -lt 30 ]; then
-            echo "Coverage ${COVERAGE}% is below 30% threshold"
-            exit 1
-          fi
+        run: ./gradlew test
 
       - name: Run integration tests
         continue-on-error: true
@@ -89,6 +80,20 @@ jobs:
           OPENCHS_DATABASE_PORT: 5432
           OPENCHS_DATABASE_USER: openchs
           OPENCHS_DATABASE_PASSWORD: password
+
+      - name: Generate combined coverage report
+        if: always()
+        run: ./gradlew jacocoTestReport
+
+      - name: Check coverage threshold
+        if: always()
+        run: |
+          COVERAGE=$(grep -oP 'Total.*?(\d+)%' avni-server-api/build/reports/jacoco/test/html/index.html | grep -oP '\d+' | tail -1)
+          echo "Code coverage: ${COVERAGE}%"
+          if [ "$COVERAGE" -lt 30 ]; then
+            echo "Coverage ${COVERAGE}% is below 30% threshold"
+            exit 1
+          fi
 
       - name: Generate test report
         if: always()
