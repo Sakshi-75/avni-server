@@ -147,6 +147,26 @@ test {
     exclude '**/MessageTemplateControllerTest.class'
 }
 
+task externalTest(type: Test) {
+    filter {
+        includeTestsMatching "*ET"
+    }
+}
+
+task integrationTest(type: Test) {
+    include '**/*IntegrationTest.class'
+    include '**/*Integration2Test.class'
+    include '**/BaseCSVImportTest.class'
+    include '**/CacheStrategyTest.class'
+    include '**/TransactionDataSyncTest.class'
+    include '**/UserSubjectSyncTest.class'
+    include '**/QueryRepositoryTest.class'
+    include '**/PrivilegeRepositoryTest.class'
+    include '**/UserRepositoryTest.class'
+    include '**/FormElementRepositoryTest.class'
+    include '**/FormMappingRepositoryTest.class'
+    include '**/IdentifierUserAssignmentRepositoryTest.class'
+
 jacocoTestReport {
     executionData test, integrationTest
     afterEvaluate {
@@ -168,26 +188,6 @@ jacocoTestReport {
 }
 
 integrationTest.finalizedBy jacocoTestReport
-
-task externalTest(type: Test) {
-    filter {
-        includeTestsMatching "*ET"
-    }
-}
-
-task integrationTest(type: Test) {
-    include '**/*IntegrationTest.class'
-    include '**/*Integration2Test.class'
-    include '**/BaseCSVImportTest.class'
-    include '**/CacheStrategyTest.class'
-    include '**/TransactionDataSyncTest.class'
-    include '**/UserSubjectSyncTest.class'
-    include '**/QueryRepositoryTest.class'
-    include '**/PrivilegeRepositoryTest.class'
-    include '**/UserRepositoryTest.class'
-    include '**/FormElementRepositoryTest.class'
-    include '**/FormMappingRepositoryTest.class'
-    include '**/IdentifierUserAssignmentRepositoryTest.class'
     include '**/MessageRequestQueueRepositoryTest.class'
     include '**/GlificRestClientTest.class'
     include '**/MessageTemplateControllerTest.class'
