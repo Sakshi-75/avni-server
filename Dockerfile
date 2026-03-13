@@ -1,3 +1,10 @@
-FROM amazoncorretto:21
-COPY avni-server-api/build/libs/avni-server-0.0.1-SNAPSHOT.jar /opt/openchs/avni-server.jar
-CMD java $OPENCHS_SERVER_OPTS $DEBUG_OPTS -jar /opt/openchs/avni-server.jar
+FROM eclipse-temurin:21-jdk AS build
+WORKDIR /app
+COPY . .
+RUN ./gradlew bootJar
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/avni-server-api/build/libs/*.jar app.jar
+EXPOSE 8021
+ENTRYPOINT ["java", "-jar", "app.jar"]
