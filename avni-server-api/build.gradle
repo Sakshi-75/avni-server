@@ -140,6 +140,7 @@ task externalTest(type: Test) {
 }
 
 task integrationTest(type: Test) {
+    useJUnitPlatform()
     include '**/*IntegrationTest.class'
     include '**/*Integration2Test.class'
     include '**/BaseCSVImportTest.class'
