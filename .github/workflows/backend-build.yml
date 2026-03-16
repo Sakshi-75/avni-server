@@ -101,13 +101,14 @@ jobs:
           path: '**/build/test-results/test/TEST-*.xml'
           reporter: java-junit
 
-      - name: Generate integration test report
-        if: always()
-        uses: dorny/test-reporter@v1
-        with:
-          name: Integration Test Results
-          path: '**/build/test-results/integrationTest/TEST-*.xml'
-          reporter: java-junit
+      # TODO: re-enable after fixing integration test report
+      # - name: Generate integration test report
+      #   if: always()
+      #   uses: dorny/test-reporter@v1
+      #   with:
+      #     name: Integration Test Results
+      #     path: '**/build/test-results/integrationTest/TEST-*.xml'
+      #     reporter: java-junit
 
   publish:
     runs-on: ubuntu-latest
