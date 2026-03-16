@@ -152,6 +152,10 @@ task integrationTest(type: Test) {
     include '**/FormElementRepositoryTest.class'
     include '**/FormMappingRepositoryTest.class'
     include '**/IdentifierUserAssignmentRepositoryTest.class'
+    include '**/MessageRequestQueueRepositoryTest.class'
+    include '**/GlificRestClientTest.class'
+    include '**/MessageTemplateControllerTest.class'
+}
 
 jacocoTestReport {
     executionData test, integrationTest
@@ -174,7 +178,3 @@ jacocoTestReport {
 }
 
 integrationTest.finalizedBy jacocoTestReport
-    include '**/MessageRequestQueueRepositoryTest.class'
-    include '**/GlificRestClientTest.class'
-    include '**/MessageTemplateControllerTest.class'
-}
