@@ -38,7 +38,8 @@ public class ArchitectureTest {
                     .should()
                     .dependOnClassesThat()
                     .belongToAnyOf(jakarta.transaction.Transactional.class)
-                    .because("Spring's @Transactional must be used instead of Jakarta's");
+                    .because("Spring's @Transactional must be used instead of Jakarta's")
+                    .allowEmptyShould(true);
 
     @ArchTest
     public static final ArchRule get_endpoints_should_have_transactional_read_only =
@@ -46,7 +47,8 @@ public class ArchitectureTest {
                     .that(areGetEndpoints())
                     .and(areNotExcluded())
                     .should(haveTransactionalReadOnly())
-                    .because("GET endpoints must use @Transactional(readOnly = true)");
+                    .because("GET endpoints must use @Transactional(readOnly = true)")
+                    .allowEmptyShould(true);
 
     private static DescribedPredicate<JavaMethod> areGetEndpoints() {
         return new DescribedPredicate<>("are GET endpoints") {

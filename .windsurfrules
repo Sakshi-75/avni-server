@@ -8,11 +8,11 @@ version = 1.0.0
 
 # Language usage
 - Do not add comments and null checks unless asked
-- Check Java version from .java_version
+- Check Java version from .java-version
 - always add new methods at the end of the file
 
 # Code organization
-- Repository and domain code goes in avni-serer-data module.
+- Repository and domain code goes in avni-server-data module.
 - Service, controller, mapper, and dto code goes in avni-server-api module. Flyway migrations are in this module.
 
 # Building blocks (or where to put which type of code)
