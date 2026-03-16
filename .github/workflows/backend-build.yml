@@ -80,10 +80,6 @@ jobs:
           OPENCHS_DATABASE_USER: openchs
           OPENCHS_DATABASE_PASSWORD: password
 
-      - name: Generate combined coverage report
-        if: always()
-        run: ./gradlew jacocoTestReport --rerun
-
       - name: Check coverage threshold
         if: always()
         run: |

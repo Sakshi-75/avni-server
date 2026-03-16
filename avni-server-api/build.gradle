@@ -159,7 +159,7 @@ task integrationTest(type: Test) {
 }
 
 jacocoTestReport {
-    executionData test, integrationTest
+    executionData fileTree(dir: layout.buildDirectory.dir("jacoco"), includes: ["*.exec"])
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
