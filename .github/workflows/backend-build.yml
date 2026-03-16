@@ -87,7 +87,9 @@ jobs:
       - name: Check coverage threshold
         if: always()
         run: |
-          COVERAGE=$(grep -oP 'Total.*?(\d+)%' avni-server-api/build/reports/jacoco/test/html/index.html | grep -oP '\d+' | tail -1)
+          REPORT=$(find avni-server-api/build/reports/jacoco -name 'index.html' | head -1)
+          echo "Using report: $REPORT"
+          COVERAGE=$(grep -oP 'Total.*?(\d+)%' "$REPORT" | grep -oP '\d+' | tail -1)
           echo "Code coverage: ${COVERAGE}%"
           if [ "$COVERAGE" -lt 30 ]; then
             echo "Coverage ${COVERAGE}% is below 30% threshold"
