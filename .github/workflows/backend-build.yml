@@ -71,14 +71,27 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew test
-
-      - name: Run integration tests
-        run: ./gradlew integrationTest
         env:
           OPENCHS_DATABASE_HOST: localhost
           OPENCHS_DATABASE_PORT: 5432
           OPENCHS_DATABASE_USER: openchs
           OPENCHS_DATABASE_PASSWORD: password
+
+      - name: Run integration tests and generate coverage
+        run: ./gradlew integrationTest jacocoTestReport
+        env:
+          OPENCHS_DATABASE_HOST: localhost
+          OPENCHS_DATABASE_PORT: 5432
+          OPENCHS_DATABASE_USER: openchs
+          OPENCHS_DATABASE_PASSWORD: password
+
+      - name: Debug coverage files
+        if: always()
+        run: |
+          echo "=== Exec files ==="
+          find . -name "*.exec" -ls
+          echo "=== Report files ==="
+          find . -path "*/jacoco/*/html/index.html" -ls
 
       - name: Check coverage threshold
         if: always()
@@ -87,11 +100,10 @@ jobs:
           echo "Using report: $REPORT"
           COVERAGE=$(grep -oP 'Total.*?(\d+)%' "$REPORT" | grep -oP '\d+' | tail -1)
           echo "Code coverage: ${COVERAGE}%"
-          # TODO: re-enable threshold after fixing combined coverage report
-          # if [ "$COVERAGE" -lt 30 ]; then
-          #   echo "Coverage ${COVERAGE}% is below 30% threshold"
-          #   exit 1
-          # fi
+          if [ "$COVERAGE" -lt 30 ]; then
+            echo "Coverage ${COVERAGE}% is below 30% threshold"
+            exit 1
+          fi
 
       - name: Generate test report
         if: always()
@@ -101,14 +113,14 @@ jobs:
           path: '**/build/test-results/test/TEST-*.xml'
           reporter: java-junit
 
-      # TODO: re-enable after fixing integration test report
-      # - name: Generate integration test report
-      #   if: always()
-      #   uses: dorny/test-reporter@v1
-      #   with:
-      #     name: Integration Test Results
-      #     path: '**/build/test-results/integrationTest/TEST-*.xml'
-      #     reporter: java-junit
+      - name: Generate integration test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Integration Test Results
+          path: '**/build/test-results/integrationTest/TEST-*.xml'
+          reporter: java-junit
+          fail-on-empty: 'false'
 
   publish:
     runs-on: ubuntu-latest
