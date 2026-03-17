@@ -78,12 +78,7 @@ jobs:
           OPENCHS_DATABASE_PASSWORD: password
 
       - name: Run integration tests and generate coverage
-        run: |
-          ./gradlew integrationTest --info 2>&1 | tail -50
-          echo "=== Integration test exec file check ==="
-          ls -la avni-server-api/build/jacoco/ || echo "No jacoco dir"
-          ls -la avni-server-api/build/test-results/integrationTest/ || echo "No integrationTest results dir"
-          ./gradlew jacocoTestReport
+        run: ./gradlew integrationTest jacocoTestReport
         env:
           OPENCHS_DATABASE_HOST: localhost
           OPENCHS_DATABASE_PORT: 5432
@@ -95,8 +90,6 @@ jobs:
         run: |
           echo "=== Exec files ==="
           find . -name "*.exec" -ls
-          echo "=== Report files ==="
-          find . -path "*/jacoco/*/html/index.html" -ls
 
       - name: Check coverage threshold
         if: always()

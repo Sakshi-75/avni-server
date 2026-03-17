@@ -141,6 +141,8 @@ task externalTest(type: Test) {
 
 task integrationTest(type: Test) {
     useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
     include '**/*IntegrationTest.class'
     include '**/*Integration2Test.class'
     include '**/BaseCSVImportTest.class'
