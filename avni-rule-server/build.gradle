@@ -62,7 +62,7 @@ dependencies {
     implementation 'org.owasp.encoder:encoder:1.2.3'
     implementation 'org.apache.commons:commons-csv:1.10.0'
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.32'
-    testImplementation 'org.slf4j:slf4j-reload4j:2.0.6'
+    testImplementation 'org.slf4j:slf4j-api'
     implementation 'com.google.guava:guava:33.2.1-jre'
     implementation 'org.codehaus.jettison:jettison:1.5.4'
 }
