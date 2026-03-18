@@ -79,7 +79,7 @@ jobs:
 
       - name: Run integration tests and generate coverage
         if: always()
-        run: ./gradlew integrationTest jacocoTestReport || true
+        run: ./gradlew integrationTest jacocoTestReport --info 2>&1 | grep -A 5 "Caused by\|Exception\|Error creating bean\|Failed to load\|Connection refused\|Cannot load" | head -80 || true
         env:
           OPENCHS_DATABASE_HOST: localhost
           OPENCHS_DATABASE_PORT: 5432
@@ -89,12 +89,20 @@ jobs:
       - name: Dump integration test failures
         if: always()
         run: |
+          echo "=== First test failure (root cause) ==="
           for f in avni-server-api/build/test-results/integrationTest/TEST-*.xml; do
-            echo "=== $f ==="
-            grep -A 20 'failure\|error' "$f" | head -30
-          done 2>/dev/null || echo "No test result files"
-          echo "=== HTML report ==="
-          cat avni-server-api/build/reports/tests/integrationTest/classes/*.html 2>/dev/null | grep -oP '(?<=<pre>).*?(?=</pre>)' | head -50 || echo "No HTML report"
+            if grep -q 'Failed to load ApplicationContext\|BeanCreationException\|Cannot load driver\|Connection refused\|datasource' "$f"; then
+              echo "--- $f ---"
+              cat "$f"
+              break
+            fi
+          done
+          echo "=== All failure messages ==="
+          grep -h 'message=' avni-server-api/build/test-results/integrationTest/TEST-*.xml 2>/dev/null | head -5
+          echo "=== Spring boot test output ==="
+          find avni-server-api/build -name "*.output" -exec cat {} \; 2>/dev/null | tail -80
+          echo "=== Surefire output ==="
+          cat avni-server-api/build/reports/tests/integrationTest/index.html 2>/dev/null | grep -oP '<pre>.*?</pre>' | head -5 || true
 
       - name: Debug coverage files
         if: always()
